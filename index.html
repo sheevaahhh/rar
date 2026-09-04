@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dabba's bazaar</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#fbf8eb',
+                            100: '#f4eca3',
+                            200: '#edd861',
+                            300: '#e5c02b',
+                            400: '#d1a41a',
+                            500: '#b48512',
+                            600: '#91630d',
+                            700: '#6d450a',
+                            800: '#4c2e07',
+                            900: '#2b1903',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Canvas Confetti for celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        .serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b48512;
+        }
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(229, 192, 43, 0.15);
+        }
+        .gold-border {
+            border-color: rgba(229, 192, 43, 0.3);
+        }
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #f4eca3 0%, #e5c02b 50%, #b48512 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Carousel Hide Scrollbars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
+
+    <script>
+        // Web Audio API Synthesizer for high-fidelity "Cha-Ching" buy sounds!
+        function playCashRegisterSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // First ding
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(1500, audioCtx.currentTime); 
+                gain1.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                osc1.start();
+                osc1.stop(audioCtx.currentTime + 0.3);
+
+                // Second high pitch ding (chaching effect)
+                setTimeout(() => {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(2200, audioCtx.currentTime); 
+                    gain2.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start();
+                    osc2.stop(audioCtx.currentTime + 0.5);
+                }, 80);
+
+            } catch (e) {
+                console.log("Audio contextual playback blocked or unsupported.");
+            }
+        }
+    </script>
+
+    <!-- Navigation / Header -->
+    <header class="sticky top-0 z-50 bg-[#0b0f19]/80 backdrop-blur-md border-b border-slate-800 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-gold-600 to-gold-400 p-2.5 rounded-xl shadow-lg shadow-gold-900/40">
+                    <i class="fa-solid fa-crown text-slate-950 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        dabba <span class="text-xs bg-gold-400/20 text-gold-300 font-mono px-2 py-0.5 rounded-full border border-gold-400/30">TRILLIONAIRE EDITION</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">happy birthday to you, dabba. ennala actuala edhuvume gift panna mudiyala so here is what i would do if i had unlimited wealth gehehehe</p>
+                </div>
+            </div>
+            
+            <!-- Live Trillion Rupee Account Balance Counter Widget -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 border border-gold-500/40 rounded-2xl p-4 flex items-center gap-4 gold-glow min-w-[280px] sm:min-w-[350px] relative overflow-hidden group">
+                <div class="absolute -right-10 -top-10 text-gold-500/5 text-7xl font-bold select-none group-hover:scale-110 transition-transform">₹</div>
+                <div class="p-3 bg-gold-500/10 rounded-xl text-gold-400">
+                    <i class="fa-solid fa-wallet text-2xl animate-pulse"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-[10px] font-bold text-gold-400 tracking-wider uppercase">Your Remaining Net Worth</p>
+                    <div id="balance-display" class="text-2xl sm:text-2xl font-mono font-extrabold text-white tracking-tight">
+                        ₹1,000,000,000,000
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Panel -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-grow w-full">
+        
+        <!-- Welcome banner -->
+        <div class="mb-10 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-purple-950/20 to-slate-900 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,0.08),transparent)] pointer-events-none"></div>
+            <div class="space-y-2 z-10">
+                <h2 class="serif-title text-3xl md:text-4xl text-white font-bold">Welcome, <span class="text-gold-300 italic">vedhadarshne!</span></h2>
+                <p class="text-slate-300 max-w-xl text-sm md:text-base leading-relaxed">
+                    You have officially been gifted <span class="text-gold-300 font-semibold font-mono">₹1,000,000,000,000</span> [One Trillion Rupees] to spend however you want. unnaku enna pudikumo jaalya enjaii karo betaa
+                </p>
+            </div>
+            <div class="flex items-center gap-3 z-10 shrink-0">
+                <button onclick="resetAccount()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white transition-all text-xs font-bold border border-slate-700 flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-rotate-left"></i> Reset Trillion Fortune
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="flex border-b border-slate-800 mb-8 gap-4 overflow-x-auto">
+            <button onclick="switchTab('shop')" id="tab-btn-shop" class="tab-button active py-3 px-4 border-b-2 border-gold-400 text-gold-300 font-bold text-sm flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-store"></i> Browse Premium Perks
+            </button>
+            <button onclick="switchTab('inventory')" id="tab-btn-inventory" class="tab-button py-3 px-4 text-slate-400 hover:text-white font-medium text-sm flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-box-open"></i> Your Purchases (<span id="inventory-count">0</span>)
+            </button>
+            <button onclick="switchTab('receipt')" id="tab-btn-receipt" class="tab-button py-3 px-4 text-slate-400 hover:text-white font-medium text-sm flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-receipt"></i> Trillionaire Bank Ledger
+            </button>
+        </div>
+
+        <!-- Shop View -->
+        <div id="tab-view-shop" class="space-y-16">
+            
+            <!-- Category: dabba Experience Exclusives -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-6 w-1 bg-gold-400 rounded-full"></div>
+                    <h3 class="text-xl font-bold tracking-wide text-white">dabba Experience Exclusives</h3>
+                    <span class="text-xs text-slate-400">(Allows uploading custom real photos!)</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Product: Hanging out with me -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-gold-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img id="img-hangout" src="https://i.postimg.cc/34K1LKcT/image.jpg" alt="Hanging out with me" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="bg-gold-500 text-slate-950 font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Most Redeemed</span>
+                                
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-gold-400 px-2 py-1.5 rounded-lg text-white text-[11px] font-medium flex items-center gap-1.5 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-hangout')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-gold-300 transition-colors">Hanging out with me (VIP Access)</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    we can play badminton and lie down on the court and yap
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹500</p>
+                                </div>
+                                <button onclick="buyItem('Hanging out with me', 500, 'img-hangout')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-cart-shopping"></i> Purchase
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product: Eating out with me -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-gold-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img id="img-dining" src="https://i.postimg.cc/Th1qhH80/image.jpg" alt="Eating out with me" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="bg-emerald-500 text-slate-950 font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Highly Demanded</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-gold-400 px-2 py-1.5 rounded-lg text-white text-[11px] font-medium flex items-center gap-1.5 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-dining')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-gold-300 transition-colors">Eating Out With Me</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    we can have chilli parotta at A2B again gehehehe
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹1,500</p>
+                                </div>
+                                <button onclick="buyItem('Eating out with me', 1500, 'img-dining')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-cart-shopping"></i> Purchase
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT: Spotify Jamming with Me -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-emerald-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img id="img-spotify" src="https://i.postimg.cc/WdZDfztJ/image.jpg" alt="Spotify Jamming with Me" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="bg-emerald-500 text-slate-950 font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Jam Session</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-emerald-400 px-2 py-1.5 rounded-lg text-white text-[11px] font-medium flex items-center gap-1.5 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-spotify')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors">Spotify Jamming with Me</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    we have done a total of 246 times of jamming btw beta
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹800</p>
+                                </div>
+                                <button onclick="buyItem('Spotify Jamming with Me', 800, 'img-spotify')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-music"></i> Start Jam
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT: Playing Chess with Me -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-amber-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img id="img-chess" src="https://i.postimg.cc/8ssz0c0F/image.jpg" alt="Playing Chess with Me" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="bg-amber-500 text-slate-950 font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Grandmaster Duel</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-amber-400 px-2 py-1.5 rounded-lg text-white text-[11px] font-medium flex items-center gap-1.5 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-chess')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-amber-300 transition-colors">Playing Chess with Me</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    nee idhu vara play panna 54 gamesla u have played 21 times with me and lost 17 times but we drew 3 times and i lost to you once gehehe
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹1,200</p>
+                                </div>
+                                <button onclick="buyItem('Playing Chess with Me', 1200, 'img-chess')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-chess-knight"></i> Play Board
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT: Roblox with Me -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-cyan-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img id="img-roblox" src="https://i.postimg.cc/zVZYFfmk/image.jpg" alt="Roblox with Me" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="bg-cyan-500 text-slate-950 font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Gamer Zone</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-cyan-400 px-2 py-1.5 rounded-lg text-white text-[11px] font-medium flex items-center gap-1.5 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-roblox')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Roblox with Me</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    pls let deepa have get bava akka's ipad and all 3 of us play when i dont have pds please
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹2,500</p>
+                                </div>
+                                <button onclick="buyItem('Roblox with Me', 2500, 'img-roblox')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-gamepad"></i> Join Game
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product: Next Life Pre-Booking -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-gold-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img id="img-reincarnation" src="https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=800" alt="Next Life dabbas" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-indigo-500 text-white font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Soul Contract</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-gold-300 transition-colors">Pre-booking Me For Next Life</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    guaranteed ah aduta lifela naa oru ponna porapen so we can have more hangouts openly with our parents knowing (i mean unga ammavuku theriyum but bava akka all dk right)
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹9,999,999,999</p>
+                                </div>
+                                <button onclick="buyItem('Pre-booking Me For Next Life', 9999999999, 'img-reincarnation')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-cart-shopping"></i> Purchase
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT: Prebook Same Family For Next Life -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-pink-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=800" alt="Prebook Same Family" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-pink-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Ultra Rare Soul Tier</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-pink-300 transition-colors">Pre-booking Same Family For Next Life</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    dabba ik that u love your family so much and i rlly wish every lifetime u get the same family (hopefully with an appa like your chitappa/mama) and be happy betaa
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹50,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Pre-booking Same Family For Next Life', 50000000000, 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=800')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-cart-shopping"></i> Purchase
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT: Never coming across niggesh IG page -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-purple-500/30 hover:-translate-y-1">
+                        <div class="relative h-56 bg-slate-950 overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=800" alt="Block Niggesh Page" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-purple-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">Feed Shield Active</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-lg font-bold text-white group-hover:text-purple-300 transition-colors">Never Seeing 'niggesh' Instagram Page Ever Again</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                    dabba buy ordering this u are essentially getting feed immunity. this means in this particular timeline, u would have never come across niggesh memes and u would have never liked my story and that means u would have never even followed me and naanum unnaku request panniruka maaten. we both would never have became friends and anyth that existed for the past 16 months nearly would never have happened. we wouldnt have crossed paths at all.
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Virtual Value</p>
+                                    <p class="text-lg font-mono font-extrabold text-gold-300">₹10,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Never Seeing niggesh IG Page', 10000000000, 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=800')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all duration-200 transform hover:scale-[1.02] flex items-center gap-1.5 active:scale-95 shadow-lg shadow-gold-500/10">
+                                    <i class="fa-solid fa-shield-halved"></i> Purchase Protection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Category: NEW - dabba's mental peace perks -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-6 w-1 bg-purple-500 rounded-full"></div>
+                    <h3 class="text-xl font-bold tracking-wide text-white">dabba's mental peace perks</h3>
+                    <span class="text-xs text-slate-400">(Supports custom image uploads!)</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Mental Peace Perk 1: Ban Chloe & Conlarat -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-purple-500/30 hover:-translate-y-1">
+                        <div class="relative h-52 bg-slate-950 overflow-hidden group">
+                            <img id="img-chloe" src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=800" alt="Ban Chloe & Conlarat" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                <span class="bg-purple-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">EC Fiesta Shield</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-purple-400 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-chloe')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white group-hover:text-purple-300 transition-colors">Ban Chloe and Conlarat from being ur IC for EC Fiesta</h4>
+                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                    for the ec fiesta, chloe and conlarat (ennadi peru idhu) nallavae irruka koodathu btw. ik i deleted all the 20 telebubbles u sent but i saved them gehehe (im so sorry for being rude that dayy manichidu ma)
+                                    <br><br>
+                                    nee ella materials edutu pora when the ic js never come without taking mc and the way u said “this main bitch chloe” HAHAHAHA
+                                    <br><br>
+                                    all in all these ppl rlly deserve to be pelted by rotten eggs and mucus summa ella porulaiyum marandu veetula vechitu ange vandu scene podura madhiri irrukathuku the way u confronted them is the least u can do
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[9px] uppercase font-bold text-slate-500">Peace Cost</p>
+                                    <p class="text-base font-mono font-extrabold text-gold-300">₹15,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Ban Chloe and Conlarat from EC Fiesta IC', 15000000000, 'img-chloe')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-ban"></i> Ban ICs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mental Peace Perk 2: Fulfill your fantasy -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-pink-500/30 hover:-translate-y-1">
+                        <div class="relative h-52 bg-slate-950 overflow-hidden group">
+                            <img id="img-fantasy" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800" alt="Fulfill your fantasy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                <span class="bg-pink-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Dream Life</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-pink-400 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-fantasy')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white group-hover:text-pink-300 transition-colors">Fulfill Your Fantasy</h4>
+                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                    nee ketta madhiri oru nalla husband + oru kozhandai + quiet aana eduthula oru veedu + oru chinna naai kutty nalla bujji bujju nu 🏡🐶👶❤️
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[9px] uppercase font-bold text-slate-500">Peace Cost</p>
+                                    <p class="text-base font-mono font-extrabold text-gold-300">₹80,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Fulfill Your Fantasy', 80000000000, 'img-fantasy')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-house-heart"></i> Fulfill Dream
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mental Peace Perk 3: Comfort zone anytime -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-cyan-500/30 hover:-translate-y-1">
+                        <div class="relative h-52 bg-slate-950 overflow-hidden group">
+                            <img id="img-comfort" src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=800" alt="Comfort Zone" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                <span class="bg-cyan-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Ultimate Cozy</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-cyan-400 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-comfort')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">Snap into your comfort zone anytime</h4>
+                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                    sooravali singam + ac + fan + charger + airpods + rogith bed ❄️🎧🛌
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[9px] uppercase font-bold text-slate-500">Peace Cost</p>
+                                    <p class="text-base font-mono font-extrabold text-gold-300">₹5,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Snap into your comfort zone anytime', 5000000000, 'img-comfort')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-couch"></i> Teleport Cozy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mental Peace Perk 4: Punish Y1 PE Teacher -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-red-500/30 hover:-translate-y-1">
+                        <div class="relative h-52 bg-slate-950 overflow-hidden group">
+                            <img id="img-peteacher" src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800" alt="Punish PE Teacher" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                <span class="bg-red-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Justice Served</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-red-400 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-peteacher')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white group-hover:text-red-300 transition-colors">Punish your Y1 PE teacher</h4>
+                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                    i rmb at the start of our insta era u hated a PE teacher because he was perverted even tho is 55 years old. 🚫⚖️
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[9px] uppercase font-bold text-slate-500">Peace Cost</p>
+                                    <p class="text-base font-mono font-extrabold text-gold-300">₹25,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Punish your Y1 PE teacher', 25000000000, 'img-peteacher')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-gavel"></i> Authorize Penalty
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mental Peace Perk 5: Eat your fav food -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-amber-500/30 hover:-translate-y-1">
+                        <div class="relative h-52 bg-slate-950 overflow-hidden group">
+                            <img id="img-favfood" src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800" alt="Fav Food" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                <span class="bg-amber-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Nostalgic Feast</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-amber-400 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-favfood')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white group-hover:text-amber-300 transition-colors">Eat your fav food</h4>
+                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                    veg satti soru + chicken rice and nuggets and chilli from the primary school + milo for $0.60 🍲🍗🥤
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[9px] uppercase font-bold text-slate-500">Peace Cost</p>
+                                    <p class="text-base font-mono font-extrabold text-gold-300">₹2,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Eat your fav food', 2000000000, 'img-favfood')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-utensils"></i> Order Feast
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mental Peace Perk 6: Watch comfort film -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-rose-500/30 hover:-translate-y-1">
+                        <div class="relative h-52 bg-slate-950 overflow-hidden group">
+                            <img id="img-comfortfilm" src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800" alt="Comfort Movies" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                <span class="bg-rose-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Movie Marathon</span>
+                                <label class="cursor-pointer bg-slate-900/80 hover:bg-slate-900 border border-slate-700 hover:border-rose-400 px-2 py-1 rounded text-white text-[10px] font-medium flex items-center gap-1 transition-all">
+                                    <i class="fa-solid fa-camera"></i> Edit Photo
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadCustomPhoto(this, 'img-comfortfilm')">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-base font-bold text-white group-hover:text-rose-300 transition-colors">Watch your comfort film anywhere anytime</h4>
+                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                    kandan karunai + premalu + vadachennai 🎬🍿
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[9px] uppercase font-bold text-slate-500">Peace Cost</p>
+                                    <p class="text-base font-mono font-extrabold text-gold-300">₹3,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Watch your comfort film anywhere anytime', 3000000000, 'img-comfortfilm')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition-all flex items-center gap-1">
+                                    <i class="fa-solid fa-film"></i> Start Movie
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Category: Luxury Shopping spree Carousel (50 Items) -->
+            <div>
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="h-6 w-1 bg-pink-500 rounded-full"></div>
+                            <h3 class="text-xl font-bold tracking-wide text-white">Ultimate Luxury Shopping Spree (50 Items)</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Louis Vuitton, Chanel, Dior, Designer Shoes, Makeup Suites & High Jewelry</p>
+                    </div>
+                    <!-- Carousel Nav Controls -->
+                    <div class="flex gap-2">
+                        <button onclick="scrollCarousel('fashion-carousel', -400)" class="p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white transition-all">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button onclick="scrollCarousel('fashion-carousel', 400)" class="p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white transition-all">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Horizontal Scroll Carousel Container -->
+                <div id="fashion-carousel" class="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar py-2">
+                    <!-- Populated via JavaScript dynamically for clean code -->
+                </div>
+            </div>
+
+            <!-- Category: Supercars & Superbikes Carousel (20 Vehicles) -->
+            <div>
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="h-6 w-1 bg-cyan-500 rounded-full"></div>
+                            <h3 class="text-xl font-bold tracking-wide text-white">Dream Garage & Superbike Fleet (20 Vehicles)</h3>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1">Hypercars, Luxury Cruisers, Superbikes, and Custom Mansions Wheels</p>
+                    </div>
+                    <!-- Carousel Nav Controls -->
+                    <div class="flex gap-2">
+                        <button onclick="scrollCarousel('garage-carousel', -400)" class="p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white transition-all">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button onclick="scrollCarousel('garage-carousel', 400)" class="p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white transition-all">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Horizontal Scroll Carousel Container -->
+                <div id="garage-carousel" class="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar py-2">
+                    <!-- Populated via JavaScript dynamically -->
+                </div>
+            </div>
+
+            <!-- Category: Elite Entertainment & Celebrity Bookings -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-6 w-1 bg-rose-500 rounded-full"></div>
+                    <h3 class="text-xl font-bold tracking-wide text-white">Elite Entertainment & Celebrity Bookings</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- Product: Fine Dating with Prime Nivin Pauly -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col md:flex-row group transition-all duration-300 hover:border-pink-500/30 hover:-translate-y-1">
+                        <div class="relative w-full md:w-1/2 h-60 md:h-auto bg-slate-950 overflow-hidden group">
+                            <img src="https://i.postimg.cc/NL7vbcgT/image.jpg" alt="Fine Dating with Prime Nivin Pauly" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950 via-slate-950/25 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex items-center gap-2">
+                                <span class="bg-pink-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Dream Date</span>
+                                <span class="bg-slate-900/80 backdrop-blur-sm text-slate-300 font-mono text-[9px] px-2 py-0.5 rounded border border-slate-700">PRIME ERA</span>
+                            </div>
+                        </div>
+                        <div class="p-6 md:w-1/2 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-xl font-extrabold text-white group-hover:text-pink-300 transition-colors">Fine Dating with Prime Nivin Pauly</h4>
+                                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                    premam with prime nivin pauly in a candelight dinner gehehe
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Celebrity Booking</p>
+                                    <p class="text-base sm:text-lg font-mono font-extrabold text-gold-300">₹200,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Fine Dating with Prime Nivin Pauly', 200000000000, 'https://i.postimg.cc/NL7vbcgT/image.jpg')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-heart"></i> Book Date
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product: Hanging out with Kathir -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col md:flex-row group transition-all duration-300 hover:border-amber-500/30 hover:-translate-y-1">
+                        <div class="relative w-full md:w-1/2 h-60 md:h-auto bg-slate-950 overflow-hidden group">
+                            <img src="https://i.postimg.cc/QVDRFypr/image.jpg" alt="Hanging out with Kathir" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950 via-slate-950/25 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex items-center gap-2">
+                                <span class="bg-amber-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Star Hangout</span>
+                            </div>
+                        </div>
+                        <div class="p-6 md:w-1/2 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-xl font-extrabold text-white group-hover:text-amber-300 transition-colors">Hanging out with Kathir</h4>
+                                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                    chill coffee and cinema talks with actor kathir!
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Celebrity Booking</p>
+                                    <p class="text-base sm:text-lg font-mono font-extrabold text-gold-300">₹120,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Hanging out with Kathir', 120000000000, 'https://i.postimg.cc/QVDRFypr/image.jpg')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-mug-hot"></i> Hang Out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product: Dhanush Watch Vada Chennai Movie Night -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col md:flex-row group transition-all duration-300 hover:border-rose-500/30 hover:-translate-y-1">
+                        <div class="relative w-full md:w-1/2 h-60 md:h-auto bg-slate-950 overflow-hidden group">
+                            <img src="https://i.postimg.cc/87xYNKpG/image.jpg" alt="Dhanush Vada Chennai" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950 via-slate-950/25 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex items-center gap-2">
+                                <span class="bg-rose-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Mega Star Event</span>
+                                <span class="bg-slate-900/80 backdrop-blur-sm text-slate-300 font-mono text-[9px] px-2 py-0.5 rounded border border-slate-700">EXCLUSIVE</span>
+                            </div>
+                        </div>
+                        <div class="p-6 md:w-1/2 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-xl font-extrabold text-white group-hover:text-gold-300 transition-colors">Movie Night with Dhanush</h4>
+                                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                    watch vadachennai with dhanush and dance raangu rangamma with him 🌝
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Celebrity Surcharge</p>
+                                    <p class="text-base sm:text-lg font-mono font-extrabold text-gold-300">₹150,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Movie Night with Dhanush (Vada Chennai)', 150000000000, 'https://i.postimg.cc/87xYNKpG/image.jpg')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-clapperboard"></i> Book Cinema
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product: Sai Abhyankkar Concert -->
+                    <div class="bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col md:flex-row group transition-all duration-300 hover:border-violet-500/30 hover:-translate-y-1">
+                        <div class="relative w-full md:w-1/2 h-60 md:h-auto bg-slate-950 overflow-hidden group">
+                            <img src="https://i.postimg.cc/jCRFxJbJ/image.jpg" alt="Sai Abhyankkar" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950 via-slate-950/25 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex items-center gap-2">
+                                <span class="bg-violet-600 text-white font-bold text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">Superstar Concert</span>
+                            </div>
+                        </div>
+                        <div class="p-6 md:w-1/2 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-xl font-extrabold text-white group-hover:text-gold-300 transition-colors">Sai Abhyankkar Private Concert</h4>
+                                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                                    sai abhyankkar unnoda veetuku vandu oru private concert host pannuvan and release a “dabba core” unplugged version
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Exclusive VIP Booking Fee</p>
+                                    <p class="text-base sm:text-lg font-mono font-extrabold text-gold-300">₹350,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('Sai Abhyankkar Private Concert', 350000000000, 'https://i.postimg.cc/jCRFxJbJ/image.jpg')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-guitar"></i> Rent Stage
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT: ALL IN ONE ULTIMATE CELEBRITY PACKAGE -->
+                    <div class="bg-slate-900/60 rounded-2xl border-2 border-gold-500/50 overflow-hidden flex flex-col md:flex-row group transition-all duration-300 hover:border-gold-400 hover:-translate-y-1 md:col-span-2 gold-glow">
+                        <div class="relative w-full md:w-1/2 h-64 md:h-auto bg-slate-950 overflow-hidden group">
+                            <img src="https://i.postimg.cc/R64XZ22Q/image.jpg" alt="All in One Celebrity Bundle" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950 via-slate-950/20 to-transparent"></div>
+                            <div class="absolute top-4 left-4 bg-gradient-to-r from-gold-500 to-amber-600 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">👑 SUPREME ALL-IN-ONE BUNDLE</div>
+                        </div>
+                        <div class="p-6 md:w-1/2 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h4 class="text-2xl font-black text-white group-hover:text-gold-300 transition-colors">The Ultimate Celebrity Pass (All-In-One Bundle)</h4>
+                                <p class="text-xs text-gold-300 font-semibold uppercase tracking-wider mt-1">Summed Up Royal Package</p>
+                                <p class="text-xs text-slate-200 mt-2 leading-relaxed">
+                                    Why pick just one? Get the complete celebrity royal treatment! Includes: 
+                                    <br>✨ <strong>Watch Vada Chennai with Dhanush</strong> and dance raangu rangamma 🌝
+                                    <br>🎤 <strong>Sai Abhyankkar</strong> private home concert + "dabba core" unplugged release
+                                    <br>🌹 <strong>Premam date with prime Nivin Pauly</strong> in a candlelight dinner gehehe
+                                    <br>☕ <strong>Coffee & cinema talks with Kathir</strong>
+                                    <br>⚡ <strong>Hiphop Tamizha meetup</strong> (beyond his songs, you like his pure soul!)
+                                    <br>🎵 <strong>Sahi Siva</strong> singing your "sahi kutty" playlist live for you!
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-500">Summed VIP Value</p>
+                                    <p class="text-xl font-mono font-black text-gold-300">₹750,000,000,000</p>
+                                </div>
+                                <button onclick="buyItem('The Ultimate Celebrity Pass (All-In-One Bundle)', 750000000000, 'https://i.postimg.cc/R64XZ22Q/image.jpg')" class="bg-gradient-to-r from-gold-500 to-gold-400 hover:from-gold-400 hover:to-gold-300 text-slate-950 font-black px-6 py-3 rounded-xl text-xs transition-all flex items-center gap-2 shadow-xl shadow-gold-500/20 active:scale-95">
+                                    <i class="fa-solid fa-crown"></i> Claim All-In-One Pass
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Inventory Tab View -->
+        <div id="tab-view-inventory" class="hidden">
+            <div class="bg-slate-900/40 p-6 md:p-8 rounded-2xl border border-slate-800 text-center space-y-4">
+                <h3 class="serif-title text-2xl text-white font-bold">Your Acquired Luxuries</h3>
+                <p class="text-slate-400 text-sm max-w-lg mx-auto">
+                    A live look at all the services, teams, stars, supercar fleets, and luxury haul you currently own with your Trillion-Rupee balance.
+                </p>
+            </div>
+
+            <!-- Empty inventory placeholder -->
+            <div id="inventory-empty-state" class="py-20 text-center space-y-4">
+                <div class="text-slate-600 text-6xl">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h4 class="text-lg font-bold text-slate-400">Inventory is currently empty</h4>
+                <p class="text-xs text-slate-500 max-w-xs mx-auto">Go spend some of those trillion rupees in the shop to see your collection grow!</p>
+                <button onclick="switchTab('shop')" class="bg-gold-500/20 text-gold-300 font-bold px-4 py-2 rounded-xl text-xs border border-gold-400/30 hover:bg-gold-500/30 transition-all">
+                    Go Shopping
+                </button>
+            </div>
+
+            <!-- Inventory Grid -->
+            <div id="inventory-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <!-- Dynamically filled with purchases -->
+            </div>
+        </div>
+
+        <!-- Ledger/Receipt Tab View -->
+        <div id="tab-view-receipt" class="hidden max-w-2xl mx-auto">
+            <div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 sm:p-8 space-y-6 shadow-2xl relative">
+                
+                <!-- Watermark -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none select-none">
+                    <i class="fa-solid fa-receipt text-9xl"></i>
+                </div>
+
+                <div class="text-center space-y-2 pb-6 border-b border-slate-800">
+                    <h3 class="serif-title text-3xl font-extrabold text-gold-300">Imperial Ledger</h3>
+                    <p class="text-xs text-slate-400 font-mono tracking-wider">OFFICIAL TRANSACTION STATEMENT</p>
+                    <p class="text-[10px] text-slate-500 font-mono">ID: dabba-TR-2026-OK</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Initial Fortune</span>
+                        <span class="font-mono text-slate-300">₹1,000,000,000,000</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400 font-semibold">Total Funds Spent</span>
+                        <span id="ledger-spent-sum" class="font-mono text-red-400">-₹0</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm border-t border-dashed border-slate-800 pt-4">
+                        <span class="text-slate-200 font-bold">Audit Remaining Funds</span>
+                        <span id="ledger-remaining" class="font-mono text-gold-300 font-extrabold">₹1,000,000,000,000</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide">Itemized Expense History:</h4>
+                    <div id="ledger-history-container" class="space-y-2 max-h-64 overflow-y-auto pr-2 text-xs">
+                        <!-- Filled dynamically -->
+                        <div class="text-slate-500 py-4 text-center italic">No transactions have been authorized yet.</div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-800 text-center space-y-3">
+                    <p class="text-[10px] text-slate-400 italic leading-relaxed">
+                        "Financial wealth is virtual, but a legendary dabba friendship is completely priceless."
+                    </p>
+                    <div class="flex justify-center gap-2">
+                        <button onclick="downloadReceipt()" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition-all flex items-center gap-1.5 shadow-md">
+                            <i class="fa-solid fa-download"></i> Save Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Custom Notification Popup Dialogs -->
+    <div id="toast-modal" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 border-2 border-gold-400/60 p-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm">
+            <div class="p-2 bg-gold-400/20 text-gold-300 rounded-lg">
+                <i id="toast-icon" class="fa-solid fa-circle-check text-xl"></i>
+            </div>
+            <div>
+                <p id="toast-title" class="font-bold text-white text-sm">Purchase Successful</p>
+                <p id="toast-desc" class="text-xs text-slate-300 mt-0.5">₹1,500 has been debited.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800/80 py-8 px-6 mt-16 text-center text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto space-y-3">
+            <p class="text-slate-400 font-medium">Made with <i class="fa-solid fa-heart text-rose-500 animate-pulse"></i> for the dabba with a Trillion-Rupee Heart.</p>
+            <p class="text-slate-600">This is a fully customizable client-side virtual playground website. Your bank account is entirely virtual and completely fun.</p>
+            <p class="text-[10px] text-slate-700">© 2026 Virtual dabba Corporation. No actual financial relationships with any cricketers or celebrities are implied.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Currency formatter
+        const formatter = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            maximumFractionDigits: 0
+        });
+
+        // 50 Teenage/Luxury Shopping Products Data Generator
+        const fashionProducts = [
+            { name: "Louis Vuitton Neverfull MM Tote", price: 220000, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600" },
+            { name: "Chanel Classic Double Flap Bag", price: 850000, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=600" },
+            { name: "Hermès Birkin 30 Gold", price: 2500000, img: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600" },
+            { name: "Dior Lady Dior Medium Bag", price: 480000, img: "https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=80&w=600" },
+            { name: "Gucci GG Marmont Matelassé", price: 195000, img: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&q=80&w=600" },
+            { name: "Prada Cleo Brushed Leather Shoulder Bag", price: 240000, img: "https://images.unsplash.com/photo-1594223274512-ad480273217c?auto=format&fit=crop&q=80&w=600" },
+            { name: "Yves Saint Laurent Loulou Bag", price: 270000, img: "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?auto=format&fit=crop&q=80&w=600" },
+            { name: "Bottega Veneta Jodie Mini Bag", price: 210000, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600" },
+            { name: "Cartier Love Diamond Bracelet", price: 1200000, img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=600" },
+            { name: "Van Cleef & Arpels Alhambra Necklace", price: 890000, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=600" },
+            { name: "Tiffany & Co. Diamond Solitaire Ring", price: 3500000, img: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&q=80&w=600" },
+            { name: "Rolex Oyster Perpetual Pink Dial", price: 1400000, img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=600" },
+            { name: "Christian Louboutin So Kate Pumps", price: 7500, img: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600" },
+            { name: "Jimmy Choo Cinderella Crystal Heels", price: 380000, img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?auto=format&fit=crop&q=80&w=600" },
+            { name: "Dior B23 High-Top Sneakers", price: 110000, img: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=600" },
+            { name: "Air Jordan 1 Retro High Travis Scott", price: 180000, img: "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?auto=format&fit=crop&q=80&w=600" },
+            { name: "Balenciaga Triple S Chunky Sneakers", price: 85000, img: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&q=80&w=600" },
+            { name: "Rare Beauty Whole Vault Makeup Collection", price: 150000, img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=600" },
+            { name: "Charlotte Tilbury Pillow Talk Unlimited Trunk", price: 120000, img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=600" },
+            { name: "Dyson Airwrap Complete Long Strawberry Bronze", price: 55000, img: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&q=80&w=600" },
+            { name: "Maison Francis Kurkdjian Baccarat Rouge 540", price: 45000, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=600" },
+            { name: "Chanel N°5 Grand Extrait Parfum", price: 280000, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=600" },
+            { name: "Apple iPhone 16 Pro Max 1TB Gold", price: 185000, img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=600" },
+            { name: "Custom Diamond-Studded Airpods Max", price: 750000, img: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&q=80&w=600" },
+            { name: "iPad Pro 13-inch M4 Diamond Edition", price: 320000, img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=600" },
+            { name: "Burberry Classic Cashmere Trench Coat", price: 210000, img: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&q=80&w=600" },
+            { name: "Versace Silk Robe & PJ Set", price: 140000, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" },
+            { name: "Fendi Baguette Pastel Leather", price: 260000, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600" },
+            { name: "Celine Triomphe Canvas Bag", price: 290000, img: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600" },
+            { name: "Miu Miu Wander Matelassé Bag", price: 230000, img: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&q=80&w=600" },
+            { name: "Jacquemus Le Chiquito Nodul", price: 75000, img: "https://images.unsplash.com/photo-1594223274512-ad480273217c?auto=format&fit=crop&q=80&w=600" },
+            { name: "Alexander Wang Crystal Scrunchie Bag", price: 95000, img: "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?auto=format&fit=crop&q=80&w=600" },
+            { name: "Gentle Monster X Jennie Sunglasses", price: 38000, img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80&w=600" },
+            { name: "Prada Triangle Logo Bucket Hat", price: 48000, img: "https://images.unsplash.com/photo-1521369984125-650a3a816972?auto=format&fit=crop&q=80&w=600" },
+            { name: "Gucci Flora Pattern Silk Scarf", price: 35000, img: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&q=80&w=600" },
+            { name: "Swarovski Tennis Necklace All Pink", price: 65000, img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=600" },
+            { name: "Vivienne Westwood Pearl Choker", price: 42000, img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=600" },
+            { name: "Ugg Tazz Slipper Platform Edition", price: 18000, img: "https://images.unsplash.com/photo-1560343090-f0409e92791a?auto=format&fit=crop&q=80&w=600" },
+            { name: "Birkenstock Boston Clog Shearling", price: 21000, img: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=600" },
+            { name: "Skims Ultimate Lounge Wardrobe Set", price: 85000, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" },
+            { name: "Alo Yoga VIP Platinum Membership Set", price: 60000, img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=600" },
+            { name: "Lululemon Everywhere Belt Bag Diamond Zip", price: 35000, img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=600" },
+            { name: "Stanley Cup 40oz Custom Bling Crystal", price: 25000, img: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&q=80&w=600" },
+            { name: "Smeg Pastel Pink Retro Fridge & Kitchen Set", price: 280000, img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600" },
+            { name: "Polaroid I-Type Gold Edition Camera", price: 22000, img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=600" },
+            { name: "Le Labo Santal 33 Personalized 500ml", price: 85000, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=600" },
+            { name: "Goyard Saint Louis GM Tote Bag", price: 260000, img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600" },
+            { name: "Rimowa Original Trunk XL Rose Gold", price: 240000, img: "https://images.unsplash.com/photo-1565026057447-b88e3f29d0ae?auto=format&fit=crop&q=80&w=600" },
+            { name: "Loewe Anagram Basket Bag", price: 68000, img: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&q=80&w=600" },
+            { name: "Personal Lifetime Shopping Spree Pass", price: 10000000, img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=600" }
+        ];
+
+        // 20 Supercars & Superbikes Data Generator
+        const vehicleProducts = [
+            { name: "Bugatti Chiron Super Sport 300+", price: 320000000, img: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&q=80&w=600" },
+            { name: "Rolls-Royce Phantom Rose Gold", price: 105000000, img: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600" },
+            { name: "Lamborghini Revuelto V12 Hybrid", price: 89000000, img: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=600" },
+            { name: "Ferrari SF90 XX Stradale", price: 92000000, img: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&q=80&w=600" },
+            { name: "Porsche 911 GT3 RS (Ruby Star Neo)", price: 48000000, img: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=600" },
+            { name: "Aston Martin Valkyrie Hypercar", price: 280000000, img: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&q=80&w=600" },
+            { name: "McLaren P1 Matte Black Spec", price: 140000000, img: "https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&q=80&w=600" },
+            { name: "Mercedes-AMG G63 Brabus 900", price: 65000000, img: "https://images.unsplash.com/photo-1520050206274-a1ae44613e6d?auto=format&fit=crop&q=80&w=600" },
+            { name: "Range Rover SV Autobiography Long", price: 42000000, img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&q=80&w=600" },
+            { name: "Tesla Cybertruck Cyberbeast", price: 22000000, img: "https://images.unsplash.com/photo-1563720223832-62a2faaa3ef7?auto=format&fit=crop&q=80&w=600" },
+            { name: "Bentley Continental GT Convertible", price: 55000000, img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=600" },
+            { name: "Pagani Huayra Roadster BC", price: 290000000, img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=600" },
+            { name: "Koenigsegg Jesko Attack", price: 310000000, img: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&q=80&w=600" },
+            { name: "Ducati Panigale V4 R Superbike", price: 8500000, img: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&q=80&w=600" },
+            { name: "Kawasaki Ninja H2R (Supercharged)", price: 9200000, img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=600" },
+            { name: "BMW M1000RR Competition Spec", price: 5500000, img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=600" },
+            { name: "Yamaha YZF-R1M Carbon Edition", price: 4800000, img: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&q=80&w=600" },
+            { name: "MV Agusta Rush 1000 Hyper-Naked", price: 6200000, img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=600" },
+            { name: "Harley-Davidson CVO Street Glide", price: 7800000, img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=600" },
+            { name: "Vespa 946 Christian Dior Edition", price: 3500000, img: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&q=80&w=600" }
+        ];
+
+        // Application State
+        let state = {
+            balance: 1000000000000, // 1 Trillion Rupees
+            inventory: [],
+            customPhotos: {
+                'img-hangout': null,
+                'img-dining': null,
+                'img-spotify': null,
+                'img-chess': null,
+                'img-roblox': null,
+                'img-chloe': null,
+                'img-fantasy': null,
+                'img-comfort': null,
+                'img-peteacher': null,
+                'img-favfood': null,
+                'img-comfortfilm': null
+            }
+        };
+
+        // Scroll helper for Carousels
+        function scrollCarousel(carouselId, amount) {
+            const container = document.getElementById(carouselId);
+            container.scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        // Render dynamic fashion & garage carousels into DOM
+        function populateCarousels() {
+            const fashionContainer = document.getElementById('fashion-carousel');
+            const garageContainer = document.getElementById('garage-carousel');
+
+            fashionProducts.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "w-72 shrink-0 bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-pink-500/30 hover:-translate-y-1";
+                card.innerHTML = `
+                    <div class="relative h-48 bg-slate-950 overflow-hidden">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                        <div class="absolute top-3 left-3 bg-pink-500/80 backdrop-blur-md text-white font-black text-[9px] px-2 py-0.5 rounded">ITEM #${index + 1}</div>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                        <h4 class="text-xs font-bold text-white group-hover:text-pink-300 transition-colors line-clamp-2">${item.name}</h4>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                            <div>
+                                <p class="text-[9px] uppercase font-bold text-slate-500">Retail</p>
+                                <p class="text-xs font-mono font-extrabold text-gold-300">${formatter.format(item.price)}</p>
+                            </div>
+                            <button onclick="buyItem('${item.name.replace(/'/g, "\\'")}', ${item.price}, '${item.img}')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-[11px] transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-bag-shopping"></i> Buy
+                            </button>
+                        </div>
+                    </div>
+                `;
+                fashionContainer.appendChild(card);
+            });
+
+            vehicleProducts.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "w-80 shrink-0 bg-slate-900/60 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-cyan-500/30 hover:-translate-y-1";
+                card.innerHTML = `
+                    <div class="relative h-48 bg-slate-950 overflow-hidden">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                        <div class="absolute top-3 left-3 bg-cyan-600/80 backdrop-blur-md text-white font-black text-[9px] px-2 py-0.5 rounded">FLEET #${index + 1}</div>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                        <h4 class="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">${item.name}</h4>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                            <div>
+                                <p class="text-[9px] uppercase font-bold text-slate-500">Fleet Cost</p>
+                                <p class="text-xs font-mono font-extrabold text-gold-300">${formatter.format(item.price)}</p>
+                            </div>
+                            <button onclick="buyItem('${item.name.replace(/'/g, "\\'")}', ${item.price}, '${item.img}')" class="bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-[11px] transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-key"></i> Key
+                            </button>
+                        </div>
+                    </div>
+                `;
+                garageContainer.appendChild(card);
+            });
+        }
+
+        // Load custom photos & inventory state from localStorage on page load
+        function loadSavedState() {
+            try {
+                const savedBalance = localStorage.getItem('trillion_balance');
+                if (savedBalance !== null) {
+                    state.balance = parseFloat(savedBalance);
+                }
+
+                const savedInventory = localStorage.getItem('trillion_inventory');
+                if (savedInventory !== null) {
+                    state.inventory = JSON.parse(savedInventory);
+                }
+
+                const savedPhotos = localStorage.getItem('trillion_photos');
+                if (savedPhotos !== null) {
+                    state.customPhotos = JSON.parse(savedPhotos);
+                    Object.keys(state.customPhotos).forEach(id => {
+                        if (state.customPhotos[id]) {
+                            const el = document.getElementById(id);
+                            if (el) el.src = state.customPhotos[id];
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log("Unable to read localStorage state.");
+            }
+            updateUI();
+        }
+
+        // Save current persistent state directly to localStorage
+        function saveState() {
+            try {
+                localStorage.setItem('trillion_balance', state.balance.toString());
+                localStorage.setItem('trillion_inventory', JSON.stringify(state.inventory));
+                localStorage.setItem('trillion_photos', JSON.stringify(state.customPhotos));
+            } catch (e) {
+                console.log("Unable to write localStorage state.");
+            }
+        }
+
+        // Update UI displays dynamically based on current values
+        function updateUI() {
+            const balString = formatter.format(state.balance);
+            document.getElementById('balance-display').textContent = balString;
+            document.getElementById('ledger-remaining').textContent = balString;
+
+            document.getElementById('inventory-count').textContent = state.inventory.length;
+
+            const spentTotal = 1000000000000 - state.balance;
+            document.getElementById('ledger-spent-sum').textContent = `-${formatter.format(spentTotal)}`;
+
+            renderInventory();
+            renderLedger();
+        }
+
+        // Buying an Item
+        function buyItem(name, price, imgSourceIdOrUrl) {
+            if (state.balance < price) {
+                showToast("Insufficient Balance!", "Even with a trillion, that takes too much!", "fa-circle-xmark", true);
+                return;
+            }
+
+            // Deduct funds
+            state.balance -= price;
+            
+            // Resolve actual image to show in inventory
+            let finalImage = imgSourceIdOrUrl;
+            if (imgSourceIdOrUrl.startsWith('img-')) {
+                finalImage = state.customPhotos[imgSourceIdOrUrl] || document.getElementById(imgSourceIdOrUrl).src;
+            }
+
+            // Register bought item to local inventory
+            const transactionId = "TXN-" + Math.floor(100000 + Math.random() * 900000);
+            state.inventory.unshift({
+                id: transactionId,
+                name: name,
+                price: price,
+                image: finalImage,
+                timestamp: new Date().toLocaleString('en-IN')
+            });
+
+            playCashRegisterSound();
+            triggerConfetti();
+            
+            saveState();
+            updateUI();
+
+            showToast("Purchase Confirmed! 🎉", `${name} added to inventory.`, "fa-circle-check");
+        }
+
+        // Handle client image uploads to let her personalize photos
+        function uploadCustomPhoto(input, targetImageId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    
+                    document.getElementById(targetImageId).src = base64Data;
+                    
+                    state.customPhotos[targetImageId] = base64Data;
+                    saveState();
+                    updateUI();
+                    
+                    showToast("Photo Updated! 📸", "Personal image applied to product card.", "fa-image");
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Render Inventory Views dynamically
+        function renderInventory() {
+            const grid = document.getElementById('inventory-grid');
+            const emptyState = document.getElementById('inventory-empty-state');
+            
+            grid.innerHTML = '';
+
+            if (state.inventory.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            state.inventory.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-gold-400/20 transition-all duration-300";
+                card.innerHTML = `
+                    <div class="h-40 bg-slate-950 overflow-hidden relative">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3">
+                            <span class="bg-gold-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-md">${item.id}</span>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <h4 class="text-sm font-bold text-white group-hover:text-gold-300 transition-colors line-clamp-1">${item.name}</h4>
+                        <div class="flex justify-between items-center text-[11px] text-slate-400 pt-2 border-t border-slate-800/60">
+                            <span>Cost: <strong class="font-mono text-gold-300">${formatter.format(item.price)}</strong></span>
+                            <span class="text-[9px] font-mono text-slate-500">${item.timestamp}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Render detailed receipt ledger audit
+        function renderLedger() {
+            const container = document.getElementById('ledger-history-container');
+            container.innerHTML = '';
+
+            if (state.inventory.length === 0) {
+                container.innerHTML = `<div class="text-slate-500 py-4 text-center italic">No transactions have been authorized yet.</div>`;
+                return;
+            }
+
+            state.inventory.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center bg-slate-900/40 p-2.5 rounded-lg border border-slate-800/40";
+                row.innerHTML = `
+                    <div class="space-y-0.5">
+                        <p class="font-bold text-slate-200 text-xs">${item.name}</p>
+                        <p class="text-[10px] text-slate-500 font-mono">${item.timestamp} | ID: ${item.id}</p>
+                    </div>
+                    <span class="font-mono text-red-400 font-semibold text-xs shrink-0">- ${formatter.format(item.price)}</span>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Trigger confetti explosions using Canvas Confetti
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f4eca3', '#e5c02b', '#b48512', '#38bdf8', '#fb7185']
+            });
+        }
+
+        // Reset account to initial trillion-dollar balance values
+        function resetAccount() {
+            state.balance = 1000000000000;
+            state.inventory = [];
+            state.customPhotos = {
+                'img-hangout': 'https://i.postimg.cc/34K1LKcT/image.jpg',
+                'img-dining': 'https://i.postimg.cc/Th1qhH80/image.jpg',
+                'img-spotify': 'https://i.postimg.cc/WdZDfztJ/image.jpg',
+                'img-chess': 'https://i.postimg.cc/8ssz0c0F/image.jpg',
+                'img-roblox': 'https://i.postimg.cc/zVZYFfmk/image.jpg',
+                'img-chloe': 'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=800',
+                'img-fantasy': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800',
+                'img-comfort': 'https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=800',
+                'img-peteacher': 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800',
+                'img-favfood': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800',
+                'img-comfortfilm': 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=800'
+            };
+            
+            Object.keys(state.customPhotos).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.src = state.customPhotos[id];
+            });
+
+            saveState();
+            updateUI();
+            
+            showToast("Account Restored", "Fortune reset back to ₹1 Trillion.", "fa-rotate-left");
+        }
+
+        // Custom UI Toasts
+        function showToast(title, desc, iconName, isError = false) {
+            const toast = document.getElementById('toast-modal');
+            const icon = document.getElementById('toast-icon');
+            const toastTitle = document.getElementById('toast-title');
+            const toastDesc = document.getElementById('toast-desc');
+
+            toast.firstElementChild.className = isError 
+                ? "bg-slate-900 border-2 border-red-500/80 p-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm"
+                : "bg-slate-900 border-2 border-gold-400/60 p-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-sm";
+
+            icon.parentElement.className = isError
+                ? "p-2 bg-red-500/20 text-red-400 rounded-lg"
+                : "p-2 bg-gold-400/20 text-gold-300 rounded-lg";
+
+            icon.className = `fa-solid ${iconName} text-xl`;
+            toastTitle.textContent = title;
+            toastDesc.textContent = desc;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Tab selection switches
+        function switchTab(tabId) {
+            document.getElementById('tab-view-shop').classList.add('hidden');
+            document.getElementById('tab-view-inventory').classList.add('hidden');
+            document.getElementById('tab-view-receipt').classList.add('hidden');
+
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.className = "tab-button py-3 px-4 text-slate-400 hover:text-white font-medium text-sm flex items-center gap-2 shrink-0";
+            });
+
+            document.getElementById(`tab-view-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            activeBtn.className = "tab-button active py-3 px-4 border-b-2 border-gold-400 text-gold-300 font-bold text-sm flex items-center gap-2 shrink-0";
+        }
+
+        // Download statement details as text
+        function downloadReceipt() {
+            if (state.inventory.length === 0) {
+                showToast("Ledger Empty", "Buy something first to generate a receipt statement.", "fa-circle-exmark", true);
+                return;
+            }
+
+            let textContent = `=========================================\n`;
+            textContent += `     THE TRILLIONAIRE DABBA BAZAAR       \n`;
+            textContent += `        OFFICIAL EXPENSE STATEMENT       \n`;
+            textContent += `=========================================\n`;
+            textContent += `Initial Fortune: ₹1,000,000,000,000\n`;
+            textContent += `Remaining Fortune: ${formatter.format(state.balance)}\n`;
+            textContent += `Total Debited: ${formatter.format(1000000000000 - state.balance)}\n\n`;
+            textContent += `Itemized Purchases:\n`;
+            textContent += `-----------------------------------------\n`;
+            state.inventory.forEach(item => {
+                textContent += `* [${item.id}] ${item.name}\n  Price: ${formatter.format(item.price)} | ${item.timestamp}\n\n`;
+            });
+            textContent += `=========================================\n`;
+            textContent += `Financial statements are virtual. dabba is forever.\n`;
+
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Trillion_dabba_Statement.txt";
+            link.click();
+        }
+
+        // Initialize state engine on window load
+        window.onload = function() {
+            populateCarousels();
+            loadSavedState();
+        }
+    </script>
+</body>
+</html>
